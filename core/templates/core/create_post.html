@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% block title %}Create Media Post - ConnectHub{% endblock %}
+
+{% block content %}
+<div class="card creation-card-wrapper">
+    <h3 style="margin-bottom: 16px;">Create a Post</h3>
+    <!-- The enctype property enables binary document and media file streaming uploads -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="post-textarea">What's on your mind, {{ request.user.username }}?</label>
+            <textarea name="content" id="post-textarea" class="form-control text-area-input" rows="4" placeholder="Share your coding updates, thoughts, photos, or videos..."></textarea>
+        </div>
+        
+        <!-- Media file input upload blocks -->
+        <div class="form-group" style="margin-top: 14px;">
+            <label style="font-weight: 600; color: var(--text-muted);">📷 Add Photo (Optional)</label>
+            <input type="file" name="image" accept="image/*" class="form-control" style="background: white; padding: 6px;">
+        </div>
+        
+        <div class="form-group" style="margin-top: 14px;">
+            <label style="font-weight: 600; color: var(--text-muted);">🎥 Add Video (Optional)</label>
+            <input type="file" name="video" accept="video/*" class="form-control" style="background: white; padding: 6px;">
+        </div>
+
+        <div class="form-actions-row" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Publish Post</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectHub</title>
+    <!-- Links our updated custom dark theme style sheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
+</head>
+<body>
+    
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="nav-logo">ConnectHub</a>
+            
+            <!-- FOOLPROOF CLIENT-SIDE DROPDOWN LANGUAGE SWITCHER -->
+            <div style="display: inline-flex; align-items: center;">
+                <select id="langDropdown" onchange="changeLanguage(this.value)" style="background: #1c1c1e; color: #25f4ee; border: 1px solid #2f2f2f; padding: 6px 10px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; outline: none;">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+                </select>
+            </div>
+
+            <!-- Links containing the translation key attributes -->
+            <div class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link" data-translate="home">Home</a>
+                <a href="{% url 'users' %}" class="nav-link" data-translate="users">Users</a>
+                <a href="{% url 'my_profile' %}" class="nav-link" data-translate="profile">Profile</a>
+                <a href="{% url 'logout' %}" class="nav-link nav-logout-btn" data-translate="logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Main injection point for child dashboard pages -->
+    <main class="app-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Script file containing our dynamic dictionary translator engine -->
+    <script src="{% static 'js/script.js' %}?v=6"></script>
+</body>
+</html>

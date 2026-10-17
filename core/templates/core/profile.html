@@ -1,0 +1,69 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="card profile-hero-card">
+    <div class="avatar-ui extra-large-avatar">{{ user_obj.username|slice:":1" }}</div>
+    <h2 class="profile-display-name">{{ user_obj.username }}</h2>
+    <p class="profile-display-bio">"{{ profile.bio }}"</p>
+    
+    <div class="profile-hero-counters">
+        <div class="hero-counter-node">
+            <span class="hero-count-val">{{ profile.followers.count }}</span>
+            <span class="hero-count-lbl" data-translate="followers">followers</span>
+        </div>
+        <div class="hero-counter-node">
+            <span class="hero-count-val">{{ profile.following.count }}</span>
+            <span class="hero-count-lbl" data-translate="following">following</span>
+        </div>
+        <div class="hero-counter-node">
+            <span class="hero-count-val">{{ posts.count }}</span>
+            <span class="hero-count-lbl" data-translate="posts">posts</span>
+        </div>
+    </div>
+
+    {% if request.user == user_obj %}
+    <button class="btn btn-secondary" id="edit-profile-toggle-btn" onclick="toggleEditProfileForm()" data-translate="edit_profile">Edit Basic Profile</button>
+    
+    <div class="edit-profile-drawer" id="edit-profile-drawer" style="display: none; margin-top: 20px; text-align: left;">
+        <form method="POST" class="profile-update-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea name="bio" id="bio-textarea-input" class="form-control" rows="3" required>{{ profile.bio }}</textarea>
+            </div>
+            <div class="form-actions-row">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditProfileForm()" data-translate="cancel">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" data-translate="save_bio">Save Bio</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <a href="{% url 'toggle_follow' profile.id %}" class="btn {% if profile in request.user.profile.following.all %}btn-secondary{% else %}btn-primary{% endif %}">
+        {% if profile in request.user.profile.following.all %}
+            <span data-translate="unfollow">Unfollow</span>
+        {% else %}
+            <span data-translate="follow">Follow</span>
+        {% endif %}
+    </a>
+    {% endif %}
+</div>
+
+<h3 class="profile-posts-divider-title" data-translate="posts">Posts</h3>
+{% for post in posts %}
+<div class="card post-card">
+    <div class="post-header">
+        <div class="avatar-ui">{{ post.user.username|slice:":1" }}</div>
+        <div class="post-meta">
+            <span class="post-username-static">{{ post.user.username }}</span>
+            <span class="post-date">{{ post.created_at|date:"M d, Y" }}</span>
+        </div>
+    </div>
+    <div class="post-body">
+        <p>{{ post.content }}</p>
+        {% if post.image %}
+        <div class="post-media-container" style="margin-top: 12px; border-radius: 8px; overflow: hidden; max-height: 450px;">
+            <img src="{{ post.image.url }}" alt="Post image" style="width: 100%; height: auto; object-fit: cover; display: block;">
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
